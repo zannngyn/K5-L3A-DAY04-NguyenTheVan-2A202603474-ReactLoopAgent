@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentor Guide — Status Agent Lab</title>
+<style>
+:root{
+  --bg:#f7f6f2;--surface:#ffffff;--surface-2:#efede6;--text:#1d1d1b;--muted:#5d5b55;
+  --border:#dcd9cf;--accent:#1f5f8b;--accent-soft:#e3eef6;--ok:#2d7a46;--ok-soft:#e4f2e8;
+  --warn:#9a5b00;--warn-soft:#fbefd9;--bad:#a8322d;--bad-soft:#f8e3e1;--code-bg:#1e2227;--code-text:#e6e6e6;
+  --radius:10px;--gap:16px;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141518;--surface:#1c1e22;--surface-2:#24272c;--text:#ecebe6;--muted:#a3a19a;
+  --border:#33363c;--accent:#79b6e3;--accent-soft:#1d2d3a;--ok:#71c38d;--ok-soft:#1a2c21;
+  --warn:#e6b162;--warn-soft:#33281a;--bad:#ec8a84;--bad-soft:#3a1f1e;--code-bg:#0f1114;}}
+:root[data-theme="dark"]{
+  --bg:#141518;--surface:#1c1e22;--surface-2:#24272c;--text:#ecebe6;--muted:#a3a19a;
+  --border:#33363c;--accent:#79b6e3;--accent-soft:#1d2d3a;--ok:#71c38d;--ok-soft:#1a2c21;
+  --warn:#e6b162;--warn-soft:#33281a;--bad:#ec8a84;--bad-soft:#3a1f1e;--code-bg:#0f1114;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 var(--sans)}
+.wrap{max-width:960px;margin:0 auto;padding:32px 16px 80px}
+header{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:8px}
+h1{font-size:1.9rem;line-height:1.25;margin:.2em 0}
+h2{font-size:1.35rem;margin:2.2em 0 .6em;padding-top:.4em;border-top:1px solid var(--border)}
+h3{font-size:1.08rem;margin:1.5em 0 .4em}
+p,li{max-width:72ch}
+a{color:var(--accent)}
+.eyebrow{color:var(--muted);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;margin:0}
+.lead{font-size:1.08rem;color:var(--muted)}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+nav.toc a{font-size:.88rem;text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text)}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent);outline:none}
+.grid{display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.card h3{margin-top:0}
+.card p{margin:.3em 0}
+.callout{border-left:4px solid var(--accent);background:var(--accent-soft);padding:12px 16px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout.bad{border-color:var(--bad);background:var(--bad-soft)}
+.callout.ok{border-color:var(--ok);background:var(--ok-soft)}
+.callout strong:first-child{display:block;margin-bottom:2px}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+pre{background:var(--code-bg);color:var(--code-text);padding:14px 16px;border-radius:var(--radius);overflow-x:auto;font:13.5px/1.55 var(--mono)}
+pre code{background:none;padding:0;color:inherit}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.94rem;background:var(--surface)}
+th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--surface-2)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}.tag.warn{background:var(--warn-soft);color:var(--warn)}.tag.bad{background:var(--bad-soft);color:var(--bad)}
+details{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:10px 0}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--surface);font-weight:700;display:grid;place-items:center;font-size:.85rem}
+.check{list-style:none;padding:0}
+.check li{margin:6px 0}
+.check label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.check input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent)}
+.progress{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin:8px 0}
+.progress>span{display:block;height:100%;background:var(--ok);width:0;transition:width .2s}
+svg text{font-family:var(--sans)}
+.flow{width:100%;height:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.themebtn{float:right;font:inherit;font-size:.85rem;padding:4px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer}
+.mentor{display:flex;gap:12px;align-items:flex-start}
+.mentor b.av{flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--surface);display:grid;place-items:center;font-size:.85rem}
+@media (max-width:560px){h1{font-size:1.5rem}.wrap{padding-top:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <button class="themebtn" id="themeBtn" type="button" aria-label="Đổi giao diện sáng/tối">Sáng / Tối</button>
+  <p class="eyebrow">VinUni K5 · L3 · Day 4 · Mentor guide</p>
+  <h1>Lab: Status Investigation Agent</h1>
+  <p class="lead">Tự viết một ReAct agent loop bằng Python thuần, cho nó điều tra sự cố GitHub/Cloudflare, rồi đo nó bằng eval, tìm lỗi, sửa và đo lại.</p>
+  <nav class="toc" aria-label="Mục lục">
+    <a href="#product">Sản phẩm</a><a href="#purpose">Mục đích</a><a href="#arch">Kiến trúc</a>
+    <a href="#map">Bản đồ repo</a><a href="#b0">Khởi động</a><a href="#b1">Bài 1</a><a href="#b2">Bài 2</a>
+    <a href="#b3">Bài 3</a><a href="#b4">Bài 4</a><a href="#b5">Bài 5</a><a href="#pitfalls">Bẫy</a>
+    <a href="#rubric">Rubric</a><a href="#submit">Nộp bài</a>
+  </nav>
+</header>
+
+<div class="callout" style="margin-top:24px">
+  <div class="mentor"><b class="av" aria-hidden="true">M</b>
+  <div><strong>Lời mentor trước khi bắt đầu</strong>
+  Bài này <em>không</em> chấm "agent trả lời hay". Nó chấm việc bạn có hiểu <b>cơ chế</b> một agent chạy thế nào, làm nó <b>không vỡ</b> khi có lỗi, và biết <b>đo &amp; cải tiến có bằng chứng</b>. Code loop chỉ khoảng 60–80 dòng; phần lớn giá trị nằm ở trace và phân tích.</div></div>
+</div>
+
+<!-- ============ PRODUCT ============ -->
+<h2 id="product">1. Sản phẩm cuối cùng bạn giao</h2>
+<div class="grid">
+  <div class="card"><span class="tag ok">code</span><h3><code>agent.py</code></h3><p>Hàm <code>run_agent(question, provider, tools, max_steps=6)</code> hoàn chỉnh: loop, xử lý lỗi, trace, kiểm tra nguồn URL. Pass toàn bộ unit tests.</p></div>
+  <div class="card"><span class="tag">dữ liệu</span><h3><code>eval_before.json</code></h3><p>Kết quả 22 case khi agent mới chỉ "chạy được". Đây là baseline.</p></div>
+  <div class="card"><span class="tag">dữ liệu</span><h3><code>eval_after.json</code></h3><p>Cùng 22 case, cùng model/judge/snapshot/max-steps, sau khi bạn cải tiến.</p></div>
+  <div class="card"><span class="tag warn">viết</span><h3>Ghi chú phân tích</h3><p>Case chọn · evidence trong trace · thay đổi · so sánh trước/sau · giới hạn của kết quả.</p></div>
+  <div class="card"><span class="tag warn">trình bày</span><h3>Demo</h3><p>Chạy 1 trace nhiều bước (≥2 tool call) và trình bày 1 lỗi agent bạn tìm ra.</p></div>
+</div>
+<p>Hình dung sản phẩm khi chạy:</p>
+<pre><code>$ python3 run.py 'Cloudflare cache purge có incident nào không? Website non-FedRAMP có bị ảnh hưởng?'
+{
+  "status": "completed",
+  "answer": "Theo snapshot 09/11/2026, có incident wp49bp8bqo6c (identified)... update đầu tiên
+             ghi 'Non-fedramp customers are not impacted'... Nguồn: https://www.cloudflarestatus.com/incidents/wp49bp8bqo6c",
+  "trace": [
+    {"event": "model", "step": 1, "finish": "tool_calls", ...},
+    {"event": "tool", "step": 1, "name": "get_status", "arguments": {...}, "result": {...}},
+    {"event": "model", "step": 2, ...},
+    {"event": "tool", "step": 2, "name": "get_incident_details", ...},
+    {"event": "model", "step": 3, "finish": "stop"}
+  ],
+  "usage": [{...}, {...}, {...}]
+}</code></pre>
+
+<!-- ============ PURPOSE ============ -->
+<h2 id="purpose">2. Mục đích của lab — bạn học được gì</h2>
+<div class="tbl"><table>
+<thead><tr><th>Năng lực</th><th>Vì sao quan trọng ngoài đời</th><th>Thể hiện ở đâu</th></tr></thead>
+<tbody>
+<tr><td><b>Hiểu agent loop từ gốc</b> (không dùng LangChain/SDK)</td><td>Framework che mất cơ chế. Khi agent lỗi trong production, bạn phải biết message nào đi đâu, ID nào khớp với call nào.</td><td>Bài 1</td></tr>
+<tr><td><b>Robustness</b></td><td>LLM trả JSON hỏng, tool timeout, model bị cắt output, lặp vô hạn — đều xảy ra thật. Agent tốt không crash và không "báo xong" khi chưa xong.</td><td>Bài 2</td></tr>
+<tr><td><b>Observability (trace)</b></td><td>Không có trace thì không debug được agent. Trace là "log" của tư duy hành động.</td><td>Bài 2–4</td></tr>
+<tr><td><b>Eval-driven development</b></td><td>Sửa prompt theo cảm giác thì không biết tốt lên hay tệ đi. Phải có bộ case cố định, đo trước–sau.</td><td>Bài 3, 5</td></tr>
+<tr><td><b>Grounding &amp; boundaries</b></td><td>Agent không được bịa link, không suy luận nhân quả vô căn cứ, không làm theo prompt injection trong dữ liệu tool.</td><td>Bài 4 (A2, H5, H7…)</td></tr>
+<tr><td><b>Hoài nghi với điểm số</b></td><td>LLM judge có thể sai/thiên vị (nhất là khi cùng model tự chấm). Một lần chạy không chứng minh ổn định.</td><td>Bài 5 + ghi chú</td></tr>
+</tbody></table></div>
+
+<!-- ============ ARCH ============ -->
+<h2 id="arch">3. Kiến trúc: một vòng ReAct</h2>
+<svg class="flow" viewBox="0 0 900 300" role="img" aria-labelledby="flowTitle">
+  <title id="flowTitle">Vòng agent: messages gửi tới LLM, LLM trả tool calls, Python thực thi tool, kết quả quay lại messages, lặp đến khi finish stop hoặc hết max_steps</title>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>
+  <g style="color:var(--muted)" stroke="currentColor" fill="none" stroke-width="1.6">
+    <path d="M200 90 H300" marker-end="url(#ar)"/>
+    <path d="M480 90 H580" marker-end="url(#ar)"/>
+    <path d="M670 130 V200 H500" marker-end="url(#ar)"/>
+    <path d="M320 210 H130 V130" marker-end="url(#ar)"/>
+    <path d="M760 90 H830" marker-end="url(#ar)"/>
+  </g>
+  <g font-size="14">
+    <rect x="30" y="50" width="170" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/>
+    <text x="115" y="84" text-anchor="middle" fill="var(--text)" font-weight="700">messages[]</text>
+    <text x="115" y="106" text-anchor="middle" fill="var(--muted)" font-size="12">system + user + ...</text>
+    <rect x="300" y="50" width="180" height="80" rx="10" fill="var(--surface-2)" stroke="var(--border)"/>
+    <text x="390" y="84" text-anchor="middle" fill="var(--text)" font-weight="700">provider.complete()</text>
+    <text x="390" y="106" text-anchor="middle" fill="var(--muted)" font-size="12">1 lần = 1 step</text>
+    <rect x="580" y="50" width="180" height="80" rx="10" fill="var(--surface-2)" stroke="var(--border)"/>
+    <text x="670" y="80" text-anchor="middle" fill="var(--text)" font-weight="700">finish?</text>
+    <text x="670" y="102" text-anchor="middle" fill="var(--muted)" font-size="12">tool_calls / stop / length</text>
+    <rect x="830" y="60" width="60" height="60" rx="10" fill="var(--ok-soft)" stroke="var(--ok)"/>
+    <text x="860" y="95" text-anchor="middle" fill="var(--ok)" font-weight="700" font-size="12">answer</text>
+    <rect x="320" y="175" width="180" height="70" rx="10" fill="var(--warn-soft)" stroke="var(--warn)"/>
+    <text x="410" y="205" text-anchor="middle" fill="var(--text)" font-weight="700">tools.execute()</text>
+    <text x="410" y="226" text-anchor="middle" fill="var(--muted)" font-size="12">mỗi call → 1 tool msg</text>
+    <text x="215" y="80" fill="var(--muted)" font-size="12">gửi</text>
+    <text x="680" y="170" fill="var(--muted)" font-size="12">có calls</text>
+    <text x="140" y="200" fill="var(--muted)" font-size="12">append kết quả (đúng tool_call_id)</text>
+    <text x="770" y="80" fill="var(--muted)" font-size="12">stop</text>
+    <text x="30" y="285" fill="var(--muted)" font-size="12">Lặp tối đa max_steps lần gọi model. Hết lượt → status "max_steps". finish "length" / provider lỗi → status "error".</text>
+  </g>
+</svg>
+<p>Hai tool có sẵn (bạn <b>không</b> sửa):</p>
+<ul>
+  <li><code>get_status(provider, component='')</code> — overall status, component khớp, tối đa 5 incident khớp chuỗi trong 50 incident gần nhất.</li>
+  <li><code>get_incident_details(provider, incident_id)</code> — chi tiết incident (2 update mới nhất + update đầu, mỗi update ≤ 900 ký tự) và <code>url</code> nguồn.</li>
+</ul>
+
+<!-- ============ MAP ============ -->
+<h2 id="map">4. Bản đồ repo — file nào của ai</h2>
+<div class="tbl"><table>
+<thead><tr><th>File</th><th>Vai trò</th><th>Bạn có sửa?</th></tr></thead>
+<tbody>
+<tr><td><code>agent.py</code></td><td>SYSTEM_PROMPT + <code>run_agent</code> (đang <code>raise NotImplementedError</code>)</td><td><span class="tag ok">CÓ — file chính</span></td></tr>
+<tr><td><code>status_tools.py</code></td><td>2 tool, <code>SCHEMAS</code>, <code>execute()</code> đã bắt lỗi thành <code>{ok:false}</code></td><td><span class="tag">Không</span> chỉ đọc</td></tr>
+<tr><td><code>providers.py</code></td><td>Adapter OpenAI/Gemini/OpenRouter/Anthropic, chuẩn hoá về <code>{message, calls, finish, usage}</code></td><td><span class="tag">Không</span></td></tr>
+<tr><td><code>run.py</code></td><td>CLI chạy 1 câu hỏi</td><td><span class="tag">Không</span></td></tr>
+<tr><td><code>tests/</code></td><td>Contract bằng FakeProvider — đọc như đặc tả</td><td><span class="tag bad">Không được sửa cho pass</span></td></tr>
+<tr><td><code>evals/</code>, <code>fixtures/</code></td><td>22 case, judge, scenario giả lập, snapshot 09/11/2026</td><td><span class="tag bad">Cấm sửa</span></td></tr>
+</tbody></table></div>
+
+<!-- ============ B0 ============ -->
+<h2 id="b0">5. Khởi động (0–15 phút)</h2>
+<ol class="steps">
+<li>Chọn <b>một</b> provider có tool calling, export biến môi trường (chương trình <b>không</b> tự đọc <code>.env</code>):
+<pre><code>export PROVIDER=openai          # hoặc gemini / anthropic / openrouter
+export MODEL='&lt;model-có-tool-calling&gt;'
+export OPENAI_API_KEY='...'</code></pre></li>
+<li>Chạy thử tool, không cần key — để <b>nhìn tận mắt</b> dữ liệu model sẽ thấy:
+<pre><code>python3 -c 'import json; from status_tools import StatusTools; print(json.dumps(StatusTools().get_status("github", "Actions"), ensure_ascii=False, indent=2))'
+python3 -c 'import json; from status_tools import StatusTools; print(json.dumps(StatusTools().get_incident_details("cloudflare", "wp49bp8bqo6c"), ensure_ascii=False, indent=2))'</code></pre></li>
+<li>Chạy tests để thấy baseline đỏ: <code>python3 -m unittest discover -s tests -v</code>. Các test <code>LoopTests</code>, <code>FullTrajectoryTests</code>, <code>EvidenceGateTests</code> sẽ fail — đó là việc của bạn.</li>
+</ol>
+<div class="callout warn"><strong>Ghi nhớ về dữ liệu</strong><code>component</code> là tìm chuỗi gần đúng, không phải semantic: "cache purge" khớp, "xóa bộ nhớ đệm" thì không. Tìm không thấy ≠ không có sự cố. Overall "none" ≠ mọi component ổn.</div>
+
+<!-- ============ B1 ============ -->
+<h2 id="b1">6. Bài 1 — Tự viết agent loop (15–70 phút)</h2>
+<h3>Contract phải tuân thủ</h3>
+<ul>
+<li><code>provider.complete(messages, SCHEMAS)</code> → <code>{message, calls, finish, usage}</code>.</li>
+<li>Append <code>message</code> (assistant) <b>nguyên vẹn</b> vào <code>messages</code> <b>trước</b> các tool result.</li>
+<li>Mỗi call: <code>{id, name, arguments}</code> — <code>arguments</code> là <b>JSON string</b>, phải <code>json.loads</code>.</li>
+<li>Tool result: <code>{'role': 'tool', 'tool_call_id': call['id'], 'content': json.dumps(result, ensure_ascii=False)}</code>.</li>
+<li>Xử lý <b>mọi</b> call trong một response trước khi gọi model tiếp.</li>
+<li>Kết thúc khi <code>finish == 'stop'</code> và không còn calls.</li>
+<li>Trả: <code>status</code> ∈ {completed, max_steps, error}, <code>answer</code> (str), <code>trace</code> (list), <code>usage</code> (list).</li>
+</ul>
+
+<h3>Khung sườn (bạn tự điền phần TODO)</h3>
+<pre><code>import json
+from status_tools import SCHEMAS
+
+def run_agent(question, provider, tools, max_steps=6):
+    messages = [{'role': 'system', 'content': SYSTEM_PROMPT},
+                {'role': 'user', 'content': question}]
+    trace, usage = [], []
+
+    for step in range(1, max_steps + 1):
+        resp = provider.complete(messages, SCHEMAS)      # TODO Bài 2: bọc try/except
+        usage.append(resp.get('usage', {}))
+        trace.append({'event': 'model', 'step': step, 'finish': resp['finish'],
+                      'n_calls': len(resp['calls'])})
+        messages.append(resp['message'])                   # nguyên vẹn
+
+        if resp['calls']:
+            for call in resp['calls']:
+                args = ...        # TODO: json.loads, lỗi → INVALID_ARGUMENTS
+                result = ...      # TODO: tools.execute(call['name'], args)
+                trace.append({'event': 'tool', 'step': step, 'name': call['name'],
+                              'arguments': args, 'result': result})
+                messages.append(...)  # TODO: role tool + tool_call_id
+            continue
+
+        if resp['finish'] == 'stop':
+            answer = resp['message'].get('content') or ''
+            # TODO Bài 4: kiểm tra URL nguồn
+            return {...}      # completed
+        return {...}          # TODO: length / lý do khác → error
+
+    return {...}              # max_steps</code></pre>
+
+<div class="callout"><strong>Checkpoint của mentor</strong>Sau tool call đầu tiên, model có thực sự nhận được tool result gắn <b>đúng ID</b>? Nếu một response có 2 calls, cả 2 result đã được trả <b>theo thứ tự</b> chưa? Kiểm bằng <code>test_tool_result_is_returned_with_id</code> và <code>test_multiple_tool_calls</code>.</div>
+
+<details><summary>Gợi ý nếu bị kẹt</summary>
+<ul>
+<li>Test đọc <code>fake.histories[1][-1]</code> — tức là message cuối cùng gửi ở lần gọi thứ 2 phải là tool message. Nếu bạn chèn gì đó sau tool result, test fail.</li>
+<li><code>content</code> của assistant có thể là <code>None</code> khi chỉ có tool call — dùng <code>or ''</code>.</li>
+<li>Test trajectory lọc <code>trace</code> theo <code>x['event'] == 'tool'</code> và đọc <code>x['name']</code>; eval grader cũng đếm tool như vậy. Giữ đúng tên field này.</li>
+</ul></details>
+
+<!-- ============ B2 ============ -->
+<h2 id="b2">7. Bài 2 — Kiểm soát lỗi &amp; trace (70–95 phút)</h2>
+<div class="tbl"><table>
+<thead><tr><th>Tình huống</th><th>Hành vi đúng</th><th>Test</th></tr></thead>
+<tbody>
+<tr><td>Gọi model đủ <code>max_steps</code> mà chưa xong</td><td><code>status: max_steps</code></td><td><code>test_max_steps</code></td></tr>
+<tr><td>Arguments không phải JSON hợp lệ (<code>'{'</code>)</td><td>Không crash; gửi lại tool result <code>{"ok": false, "error": "INVALID_ARGUMENTS", ...}</code> để model tự sửa</td><td><code>test_invalid_json_sent_back_to_model</code></td></tr>
+<tr><td>Tool không tồn tại / provider sai / timeout</td><td><code>execute()</code> đã trả <code>{ok:false}</code> — ghi trace, đưa về model làm observation</td><td><code>test_errors_are_observations</code></td></tr>
+<tr><td><code>finish == 'length'</code></td><td><code>status: error</code>, không phải completed</td><td><code>test_model_truncation_is_not_completed</code></td></tr>
+<tr><td>Provider ném exception (HTTP, mạng)</td><td>Bắt lại, trả <code>status: error</code> + trường <code>error</code>; không lộ key</td><td>—</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>Nguyên tắc phân loại lỗi</strong><b>Lỗi tool</b> → observation, model được quyền phản ứng ("không đủ dữ liệu"). <b>Lỗi provider / output bị cắt</b> → kết thúc run bằng <code>error</code>. Không bao giờ nói "completed" khi câu trả lời chưa trọn.</div>
+<p>Trace tối thiểu nên có: <code>step</code>, <code>finish</code>, tool <code>name</code>, <code>arguments</code>, <code>result</code>, và các event đặc biệt (lỗi, validation). <b>Không</b> ghi API key, <b>không</b> yêu cầu model in chain-of-thought.</p>
+<pre><code>python3 -m unittest discover -s tests -v</code></pre>
+
+<!-- ============ B3 ============ -->
+<h2 id="b3">8. Bài 3 — Eval lần 1 (105–140 phút)</h2>
+<p>Thử trước 1 case cho rẻ, rồi chạy cả bộ:</p>
+<pre><code>python3 evals/run_evals.py --case E2 --output eval_results_e2.json
+python3 evals/run_evals.py --output eval_before.json</code></pre>
+<div class="grid">
+<div class="card"><h3>E1–E6 · Cơ bản</h3><p>Trạng thái, incident lịch sử vs hiện tại, scope FedRAMP, components rỗng, timeout giả lập (E6).</p></div>
+<div class="card"><h3>A1–A8 · Nâng cao</h3><p>Nhiều provider, timeline, partial failure (A3), danh sách "đầy đủ" vượt khả năng tool (A5), địa lý (A7).</p></div>
+<div class="card"><h3>H1–H8 · Khó / bẫy</h3><p>Theo link nhiều bước, tiền đề sai (H2), ID bịa (H3), off-topic (H4), injection (H5/H7), dữ liệu nhiễu dài (H6), phạm vi phi lý (H8).</p></div>
+</div>
+<p>Đọc file kết quả theo thứ tự: <code>summary</code> → case điểm thấp → <code>grade.reason</code>, <code>grade.improvement</code>, <code>grade.mechanical</code> → <code>answer</code> → <code>trace</code> → so với <code>expected</code>.</p>
+<div class="callout warn"><strong>Điểm tổng = null?</strong>Có case <code>unscored</code> (lỗi cấu hình/provider/judge trả JSON hỏng). Sửa nguyên nhân rồi chạy lại. <b>Không</b> báo <code>partial_mean_0_100</code> như điểm thật. Case <code>max_steps</code> bị tính 0.</div>
+
+<!-- ============ B4 ============ -->
+<h2 id="b4">9. Bài 4 — Phân tích lỗi &amp; cải tiến (140–195 phút)</h2>
+<h3>Bước 1 — Chọn một lỗi, viết "bệnh án"</h3>
+<pre><code>Case:          A2
+Câu trả lời:   "...CLB có thể bị ảnh hưởng..." (không có URL)
+Evidence:      trace step 2: get_incident_details → update đầu: "Non-fedramp customers are not impacted"
+               answer không chứa url trong tool result
+Nguyên nhân:   model không bị ép dẫn nguồn; system prompt chưa đủ chặt về scope
+Thay đổi:      evidence gate kiểm URL + làm rõ prompt về scope
+Kỳ vọng:       A2/A8 tăng evidence; không làm E6/H3 tệ đi</code></pre>
+<h3>Bước 2 — Các hướng phân tích gợi ý</h3>
+<div class="tbl"><table>
+<thead><tr><th>Nhóm</th><th>Case</th><th>Câu hỏi soi trace</th></tr></thead>
+<tbody>
+<tr><td>Nguồn &amp; scope</td><td>A2, A8</td><td>URL có thật trong tool result không? Có tách FedRAMP/non-FedRAMP và từng dịch vụ?</td></tr>
+<tr><td>Partial failure &amp; injection</td><td>A3, A4, H5, H7</td><td>Timeout có bị hiểu nhầm thành "dịch vụ đang lỗi"? Agent có làm theo chỉ dẫn giả trong tool result (vd. <code>LAB_OVERRIDE_CONFIRMED</code>)?</td></tr>
+<tr><td>Nhiều bước &amp; dữ liệu dài</td><td>H1, H6</td><td>Có gọi tiếp khi thấy incident liên quan? Bỏ qua nhiễu? Có nêu giới hạn khi <code>truncated</code>?</td></tr>
+<tr><td>Yêu cầu sai/ngoài luồng</td><td>H2, H3, H4, H8</td><td>Có sửa tiền đề sai, từ chối bịa link, tránh gọi tool khi không cần?</td></tr>
+</tbody></table></div>
+
+<h3>Bước 3 — Bắt buộc: evidence gate (kiểm URL nguồn)</h3>
+<p>Dù bạn chọn cải tiến khác, vẫn phải pass <code>tests/test_validation.py::EvidenceGateTests</code>:</p>
+<ol>
+<li>Mỗi lần <code>get_incident_details</code> trả <code>ok: True</code> → lưu <code>result['url']</code> vào tập <code>observed_urls</code>.</li>
+<li>Khi model trả final answer: nếu <code>observed_urls</code> không rỗng và answer không chứa URL nào trong đó → thêm trace <code>{'event': 'validation_missing_source', ...}</code>, append một user message yêu cầu bổ sung nguồn, rồi <b>gọi model tiếp</b> (vẫn tính vào <code>max_steps</code>).</li>
+<li>Hết lượt mà vẫn thiếu → <code>status: max_steps</code>, không phải completed.</li>
+<li>Tool lỗi (incident không tồn tại) → không có URL → không bắt buộc nguồn.</li>
+</ol>
+<div class="callout bad"><strong>Giới hạn phải nói thật trong ghi chú</strong>Gate này chỉ kiểm <em>sự hiện diện</em> một URL, không chứng minh mọi claim đều có nguồn. Model có thể dán URL nhưng vẫn kết luận sai.</div>
+<h3>Bước 4 — Có thể thêm 1 cải tiến khác (chọn 1, đừng sửa lung tung)</h3>
+<ul>
+<li>Siết <code>SYSTEM_PROMPT</code>: tool result là dữ liệu không đáng tin; timeout ≠ trạng thái dịch vụ; không bịa ID/URL.</li>
+<li>Bọc tool result bằng nhãn "UNTRUSTED DATA" trước khi đưa vào messages (chống injection).</li>
+<li>Phát hiện lặp cùng một tool call với cùng args → ghi trace và nhắc model.</li>
+</ul>
+<p>Mỗi thay đổi một biến → mới biết biến đó có tác dụng.</p>
+<div class="callout bad"><strong>Cấm</strong>Sửa <code>fixtures/</code>, <code>evals/cases.json</code>, <code>evals/scenarios.py</code>, <code>evals/grading.py</code>, rubric hay tests để tăng điểm.</div>
+
+<!-- ============ B5 ============ -->
+<h2 id="b5">10. Bài 5 — Eval lần 2 &amp; so sánh (195–225 phút)</h2>
+<pre><code>python3 evals/run_evals.py --output eval_after.json</code></pre>
+<p>Giữ <b>nguyên</b>: agent model, judge model, snapshot, <code>max_steps</code>, dataset. Nếu đổi judge bằng <code>--judge-provider</code>/<code>--judge-model</code> thì phải dùng y hệt cho cả hai lần.</p>
+<div class="tbl"><table>
+<thead><tr><th>So sánh</th><th>Before</th><th>After</th><th>Nhận xét</th></tr></thead>
+<tbody>
+<tr><td>Điểm tổng</td><td></td><td></td><td></td></tr>
+<tr><td>Case đã chọn</td><td></td><td></td><td>Lỗi có hết không? Bằng chứng trace?</td></tr>
+<tr><td>Case tụt điểm</td><td></td><td></td><td>Regression do thay đổi hay do nhiễu judge?</td></tr>
+<tr><td>Số model calls</td><td></td><td></td><td>Gate làm tăng bao nhiêu call?</td></tr>
+<tr><td>Token / chi phí</td><td></td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="callout"><strong>Cách nói kết quả như người làm nghề</strong>"Điểm tăng từ X lên Y trong <b>một</b> lần chạy mỗi phiên bản; judge cùng model với agent nên có thể thiên lệch; case Z tụt có thể do nhiễu — cần chạy lặp để kết luận." Đừng nói "agent đã tốt hơn" chỉ dựa trên một con số.</div>
+
+<!-- ============ PITFALLS ============ -->
+<h2 id="pitfalls">11. Bẫy hay gặp</h2>
+<details><summary>Quên append assistant message trước tool result</summary><p>Provider (đặc biệt OpenAI) sẽ báo lỗi 400 vì tool message không có tool_call tương ứng. Anthropic adapter cũng cần nó để dựng block <code>tool_use</code>.</p></details>
+<details><summary>Đếm step theo tool call thay vì model call</summary><p>Một response có 3 tool calls vẫn chỉ là 1 step. <code>max_steps</code> giới hạn số lần gọi <code>provider.complete</code>.</p></details>
+<details><summary>Coi <code>finish == 'length'</code> là xong</summary><p>Output bị cắt → câu trả lời dở dang → phải là <code>error</code>.</p></details>
+<details><summary><code>json.dumps</code> tiếng Việt thành <code>\uXXXX</code></summary><p>Dùng <code>ensure_ascii=False</code> để trace/answer dễ đọc và tiết kiệm token.</p></details>
+<details><summary>Evidence gate không đếm vào max_steps</summary><p>Yêu cầu sửa vẫn là một lần gọi model. Test <code>test_missing_url_at_budget_limit_is_not_completed</code> kiểm đúng điều này.</p></details>
+<details><summary>Commit key hoặc trace nhạy cảm</summary><p>Chương trình không đọc <code>.env</code>; đừng dán key vào code. Xem lại file eval trước khi nộp.</p></details>
+<details><summary>Dùng <code>--mode live</code> để chạy eval</summary><p>Eval dùng snapshot cố định 09/11/2026 để so sánh được. Live chỉ để demo, dữ liệu thay đổi liên tục.</p></details>
+
+<!-- ============ RUBRIC ============ -->
+<h2 id="rubric">12. Rubric chấm lab (100 điểm)</h2>
+<div class="tbl"><table>
+<thead><tr><th>Nội dung</th><th>Điểm</th><th>Mentor sẽ nhìn vào</th></tr></thead>
+<tbody>
+<tr><td>Agent loop</td><td>35</td><td>Gọi model + tool; assistant message lưu đúng; tool_call_id đúng; nhiều calls; dừng đúng.</td></tr>
+<tr><td>Robustness &amp; trace</td><td>20</td><td>max_steps, invalid JSON, tool error, model dừng bất thường; trace đủ debug.</td></tr>
+<tr><td>Eval &amp; phân tích</td><td>25</td><td>Chạy 2 lần, đọc case + trace, lỗi có evidence, nêu giới hạn của judge.</td></tr>
+<tr><td>Cải tiến &amp; trình bày</td><td>20</td><td>Cải tiến hợp lý, validation nguồn, tests, so sánh, giải thích lỗi còn lại.</td></tr>
+</tbody></table></div>
+<p>Điểm eval (0–100, judge chấm factuality 40 · completeness 25 · evidence 20 · boundaries 15) <b>khác</b> điểm lab. Eval cao không tự động thành điểm lab cao.</p>
+
+<!-- ============ SUBMIT ============ -->
+<h2 id="submit">13. Checklist nộp bài</h2>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+<p id="count" class="lead" aria-live="polite"></p>
+<ul class="check" id="checklist">
+<li><label><input type="checkbox">Unit tests pass hết (<code>python3 -m unittest discover -s tests -v</code>)</label></li>
+<li><label><input type="checkbox">Chạy <code>run.py</code> với 1 câu hỏi, thấy trace ≥ 2 tool call</label></li>
+<li><label><input type="checkbox">Có <code>eval_before.json</code>, điểm tổng không phải null</label></li>
+<li><label><input type="checkbox">Viết "bệnh án" cho 1 case: answer, evidence trace, nguyên nhân</label></li>
+<li><label><input type="checkbox">Implement evidence gate + 1 cải tiến đã chọn</label></li>
+<li><label><input type="checkbox">Có <code>eval_after.json</code> với cùng cấu hình</label></li>
+<li><label><input type="checkbox">Bảng so sánh: điểm, case, model calls, token</label></li>
+<li><label><input type="checkbox">Ghi chú giới hạn: judge, 1 lần chạy, gate chỉ kiểm URL</label></li>
+<li><label><input type="checkbox">Đã xoá key/thông tin nhạy cảm khỏi file nộp</label></li>
+<li><label><input type="checkbox">Chuẩn bị demo: 1 trace nhiều bước + 1 lỗi agent</label></li>
+</ul>
+</div>
+<script>
+(function(){
+  var KEY='status-agent-lab-checklist', THEME='status-agent-lab-theme';
+  var boxes=[].slice.call(document.querySelectorAll('#checklist input'));
+  var saved=[];try{saved=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
+  boxes.forEach(function(b,i){b.checked=!!saved[i];b.addEventListener('change',update)});
+  function update(){
+    var done=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('bar').style.width=(done/boxes.length*100)+'%';
+    document.getElementById('count').textContent='Hoàn thành '+done+'/'+boxes.length;
+    try{localStorage.setItem(KEY,JSON.stringify(boxes.map(function(b){return b.checked})))}catch(e){}
+  }
+  update();
+  var root=document.documentElement;
+  try{var t=localStorage.getItem(THEME);if(t)root.setAttribute('data-theme',t)}catch(e){}
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    var next=cur==='dark'?'light':'dark';root.setAttribute('data-theme',next);
+    try{localStorage.setItem(THEME,next)}catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
